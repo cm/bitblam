@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bitfield": "^3.0.0",
+    "node-sass": "^4.13.1",
     "parse-torrent": "^7.1.2",
     "query-string": "^6.11.1",
     "react": "^16.13.1",

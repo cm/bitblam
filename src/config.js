@@ -3,9 +3,7 @@
  */
 export const torrentOptions = {
   announce: [
-    'wss://tracker.openwebtorrent.com',
-    'wss://tracker.btorrent.xyz',
-    'wss://tracker.fastcast.nz'
+    'wss://tracker.openwebtorrent.com'
   ]
 }
 
@@ -13,6 +11,6 @@ export const torrentOptions = {
  * Configuration for renderTo function
  */
 export const renderOptions = {
-  autoplay: true,
-  controls: false
+  autoplay: false,
+  controls: true
 }

@@ -1,12 +1,12 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
-import Player from '../pages/player'
-import Home from '../pages/home'
+import Player from './player'
+import Home from './home'
 
-export default App = () => (
+const Root = () => (
   <Router>
-    <div className='application-route'>
+    <div className='application'>
       <Switch>
         <Route path='/:hash' component={Player} />
         <Route path='/' component={Home} />
@@ -14,3 +14,5 @@ export default App = () => (
     </div>
   </Router>
 )
+
+export default Root

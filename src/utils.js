@@ -13,7 +13,7 @@ export const getUrlQuery = (query, loc) => queryString.parse(loc.search)[query];
  * @param {Array} files 
  * @returns {Object}
  */
-export const getLargestFile = files => {
+export const getLargestFileIndex = files => {
   let largestSize = 0;
   let largestIndex = 0;
 
@@ -24,7 +24,7 @@ export const getLargestFile = files => {
     }
   }
 
-  return files[largestIndex];
+  return largestIndex;
 }
 
 /**

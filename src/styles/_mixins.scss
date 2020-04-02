@@ -1,0 +1,12 @@
+// Media query mixin
+@mixin media($feature, $value) {
+  @if $feature == 'min' {
+      @media only screen and (min-width: $value) {
+          @content;
+      }
+  } @else if $feature == 'max' {
+      @media only screen and (max-width: $value - 1) {
+          @content;
+      }
+  }
+}
