@@ -3,7 +3,8 @@
  */
 export const torrentOptions = {
   announce: [
-    'wss://tracker.openwebtorrent.com'
+    'wss://tracker.openwebtorrent.com',
+    'wss://tracker.btorrent.xyz'
   ]
 }
 
