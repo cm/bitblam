@@ -1,22 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { setTorrent, useTorrent, getTorrentFile } from './torrent'
+import { useTorrent  } from './torrent'
 import { renderOptions } from './config'
+import { getLargestFileIndex } from './utils'
 
 /**
  * Root player view
  */
 const Player = props => {
+  const hash = props.match.params.hash
   const video = useRef()
-  const torrent = useTorrent(1000)
+  const [info, files] = useTorrent(hash, 1000)
   const [rendering, setRendering] = useState(false)
 
-  const hash = props.match.params.hash
-
-  if (!torrent) setTorrent(hash)
-
-  if (torrent && torrent.ready && !rendering) {
+  if (info && info.ready && !rendering) {
+    console.log(files)
     setRendering(true)
-    getTorrentFile().renderTo(video.current, renderOptions, err => {
+    files[getLargestFileIndex(files)].renderTo(video.current, renderOptions, err => {
         if (err) {
           console.log(err)
         }
@@ -28,7 +27,7 @@ const Player = props => {
   return (
     <main className='player'>
       <video className='video' ref={video} />
-      <Overlay video={video} {...torrent} />
+      <Overlay video={video} {...info} />
     </main>
   )
 }

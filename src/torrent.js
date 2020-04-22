@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import WebTorrent from 'webtorrent'
 import { torrentOptions } from './config'
-import { getLargestFileIndex } from './utils'
 
 /**
  * Init WebTorrent Client
@@ -14,60 +13,65 @@ const client = new WebTorrent()
 let torrent = null
 
 /**
+ * Keep a reference to files accessible
+ */
+let files = null
+
+
+/**
+ * 
+ */
+const getFiles = () => files
+
+/**
  * Hook for set torrents state
- * @param {number} interval 
+ *
+ * @param {string} initiator - Torrent identifier
+ * @param {number} interval - Update interval
  * @returns {React.ComponentState}
  */
-export const useTorrent = interval => {
-  const [state, setState] = useState(null)
+export const useTorrent = (initiator, interval = 1000) => {
+  const [torrentState, setTorrentState] = useState(null)
 
   useEffect(() => {
-    const updateState = () => {
+    // Add torrent of one does not exist
+    if (!torrent) {
+      torrent = client.add(initiator, torrentOptions)
+    }
+
+    const updateTorrentState = () => {
       if (torrent) {
-        setState({
-          ready: torrent.ready
+        // Create server if torrent ready and no server set
+        if (torrent.ready && !files) {
+          files = torrent.files
+        }
+        
+        // Update current state
+        setTorrentState({
+          ready: torrent.ready,
+          peers: torrent.peers,
+          downloadSpeed: torrent.downloadSpeed,
+          uploadSpeed: torrent.uploadSpeed,
+          timeRemaining: torrent.timeRemaining,
+          progress: torrent.progress,
         })
       }
     }
 
-    let id = setInterval(updateState, interval) 
-    return () => clearInterval(id)
-  }, [interval])
+    // Interval updator
+    let id = setInterval(updateTorrentState, interval) 
 
-  return state
-}
+    // Cleanup on unmount
+    return () => {
+      clearInterval(id)
+      if (torrent) {
+        torrent.destroy(() => {
+          torrent = null
+        })
+        files = null
+      }
+    }
+  }, [initiator, interval])
 
-/**
- * Returns a files from 
- * @returns {WebTorrent.TorrentFile}
- */
-export const getTorrentFile = () => {
-  if (!torrent) {
-    return null
-  }
-  
-  return torrent.files[getLargestFileIndex(torrent.files)]
-}
-
-/**
- * Adds a single torrent to the client
- * @param {string} hash 
- * @returns {void}
- */
-export const setTorrent = hash => {
-  if (!torrent) {
-    torrent = client.add(hash, torrentOptions)
-  }
-}
-
-/**
- * Removes active torernt from client
- * @returns {void}
- */
-export const destroyTorrent = () => {
-  if (torrent) {
-    torrent.destroy(() => {
-      torrent = null
-    })
-  }
+  return [torrentState, files]
 }
